@@ -59,9 +59,25 @@ curl "https://YOUR-WORKER.workers.dev/api/scrape?id=1732824684683784516"
 
 ## Endpoints
 
+### Root shortcut: `GET /?url={post_url}`
+
+For convenience, the Worker also accepts a copied X post URL directly as the `url` query parameter at the root. This matches the URL format you were already trying to use:
+
+```text
+https://YOUR-WORKER.workers.dev/?url=https://x.com/username/status/1234567890123456789
+```
+
+The URL-encoded form is safer when building links programmatically:
+
+```text
+https://YOUR-WORKER.workers.dev/?url=https%3A%2F%2Fx.com%2Fusername%2Fstatus%2F1234567890123456789
+```
+
+A root request without `url` or `id` still returns the health response.
+
 ### `GET /` or `GET /health`
 
-Health and endpoint information.
+Health and endpoint information when no scrape input is provided.
 
 ```bash
 curl "https://YOUR-WORKER.workers.dev/health"
@@ -118,14 +134,15 @@ curl -X POST "https://YOUR-WORKER.workers.dev/api/scrape" \
       "width": 1280,
       "height": 720,
       "engine": "FxTwitter",
-      "download_url": "/api/download?url=...&filename=...",
-      "stream_url": "/api/stream?url=..."
+      "direct_download_url": "https://video.twimg.com/...mp4",
+      "download_url": "https://YOUR-WORKER.workers.dev/api/download?url=...&filename=...",
+      "stream_url": "https://YOUR-WORKER.workers.dev/api/stream?url=..."
     }
   ]
 }
 ```
 
-The response fields and available media depend on what the third-party provider returns. The example is illustrative; some fields may be `null` or omitted, and quality variants can differ by post.
+The response fields and available media depend on what the third-party provider returns. The example is illustrative; some fields may be `null` or omitted, and quality variants can differ by post. `direct_download_url` (also available as `url`) points straight to the upstream X media CDN. `download_url` and `stream_url` are fully qualified links on your own Worker domain.
 
 ### `GET /api/download`
 
