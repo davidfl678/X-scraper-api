@@ -1,0 +1,16 @@
+{
+  "name": "twitter-x-scraper-api",
+  "version": "1.0.0",
+  "description": "Third-party-powered public X/Twitter post media scraper API for Cloudflare Workers",
+  "main": "src/index.js",
+  "type": "module",
+  "author": "Thisan Dinujaya",
+  "license": "MIT",
+  "scripts": {
+    "dev": "wrangler dev --ip 0.0.0.0 --port 8786",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^3.114.0"
+  }
+}
