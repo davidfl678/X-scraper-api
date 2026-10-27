@@ -64,7 +64,7 @@ async function fetchEngine(base, post, engine) {
   return { media, title: tweet.text || tweet.full_text || tweet.caption || tweet.description || null, author: tweet.author?.name || tweet.user?.name || tweet.user?.screen_name || tweet.author_name || null, username: tweet.author?.screen_name || tweet.user?.screen_name || tweet.username || null, thumbnail: media.find(x => x.thumbnail)?.thumbnail || null, created_at: tweet.created_at || null, engine };
 }
 
-async function scrape(input) {
+async function scrape(input, origin) {
   const post = parsePostUrl(input);
   const engines = [
     ["FxTwitter", "https://api.fxtwitter.com"],
@@ -74,7 +74,7 @@ async function scrape(input) {
   for (const [name, base] of engines) {
     try {
       const result = await fetchEngine(base, post, name);
-      result.media = result.media.map((media, index) => ({ ...media, download_url: `/api/download?url=${encodeURIComponent(media.url)}&filename=${encodeURIComponent(`x_${post.id}_${index + 1}.${media.extension}`)}`, stream_url: `/api/stream?url=${encodeURIComponent(media.url)}` }));
+      result.media = result.media.map((media, index) => ({ ...media, direct_download_url: media.url, download_url: new URL(`/api/download?url=${encodeURIComponent(media.url)}&filename=${encodeURIComponent(`x_${post.id}_${index + 1}.${media.extension}`)}`, origin).href, stream_url: new URL(`/api/stream?url=${encodeURIComponent(media.url)}`, origin).href }));
       return { success: true, platform: "x", post_id: post.id, post_url: post.url, title: result.title, author: result.author, username: result.username, thumbnail: result.thumbnail, created_at: result.created_at, engine: result.engine, media: result.media };
     } catch (error) { errors.push(`${name}: ${error.message}`); }
   }
@@ -124,7 +124,7 @@ export default {
         let input = url.searchParams.get("url") || url.searchParams.get("id");
         if (request.method === "POST") { const body = await request.json(); input = body.url || body.id || input; }
         if (!input) return json({ success: false, error: "Provide url or id." }, 400);
-        try { parsePostUrl(input); return json(await scrape(input)); } catch (error) { const status = /valid public|Only X\/Twitter|must point to a post/i.test(error.message) ? 400 : 502; return json({ success: false, error: error.message }, status); }
+        try { parsePostUrl(input); return json(await scrape(input, url.origin)); } catch (error) { const status = /valid public|Only X\/Twitter|must point to a post/i.test(error.message) ? 400 : 502; return json({ success: false, error: error.message }, status); }
       }
       if (url.pathname === "/api/download") return await proxy(request, "download");
       if (url.pathname === "/api/stream") return await proxy(request, "stream");
