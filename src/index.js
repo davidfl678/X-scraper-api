@@ -118,8 +118,9 @@ export default {
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { ...JSON_HEADERS, "access-control-allow-methods": "GET, POST, OPTIONS", "access-control-allow-headers": "content-type, range" } });
     if (request.method !== "GET" && request.method !== "POST") return json({ success: false, error: "Method not allowed." }, 405);
     try {
-      if (url.pathname === "/" || url.pathname === "/health") return json({ success: true, name: "Twitter/X Scraper API", endpoints: ["/api/scrape", "/api/download", "/api/stream"] });
-      if (url.pathname === "/api/scrape") {
+      const hasScrapeInput = url.searchParams.has("url") || url.searchParams.has("id");
+      if (url.pathname === "/health" || (url.pathname === "/" && !hasScrapeInput)) return json({ success: true, name: "Twitter/X Scraper API", endpoints: ["/api/scrape", "/api/download", "/api/stream"] });
+      if (url.pathname === "/api/scrape" || (url.pathname === "/" && hasScrapeInput)) {
         let input = url.searchParams.get("url") || url.searchParams.get("id");
         if (request.method === "POST") { const body = await request.json(); input = body.url || body.id || input; }
         if (!input) return json({ success: false, error: "Provide url or id." }, 400);
