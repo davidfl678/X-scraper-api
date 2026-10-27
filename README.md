@@ -25,7 +25,7 @@
 
 An API-only Cloudflare Worker that looks up publicly accessible X posts using independent third-party services. It returns available post/media metadata and direct media links, and offers download and byte-range streaming proxy endpoints.
 
-> This is an independent community project and is not affiliated with X Corp. Use it only with public content you own or have permission to access. Private or protected posts are not supported. Follow applicable laws, platform policies, and the terms of the upstream providers.
+> **Disclaimer:** This is an independent, unofficial project and is not affiliated with, endorsed by, or sponsored by X Corp. or any third-party provider. X, Twitter, and related names and marks belong to their respective owners. This API does not host or claim ownership of retrieved content; all content remains the property of its respective rights holders. Use it only for publicly accessible content you own or are authorized to access, and do not use it to infringe copyright, privacy, or other rights. You are responsible for complying with applicable laws, X's terms and policies, and the upstream providers' terms. Private or protected posts are not supported. The software is provided “as is,” without warranties; the maintainers are not responsible for misuse, service interruptions, or claims arising from your use. This notice is informational and is not legal advice.
 
 ## Features
 
@@ -264,6 +264,14 @@ X-scraper-api/
 - The Worker does not store media; upstream media URLs are streamed through on demand.
 - The size guard depends on the upstream providing a `Content-Length` header.
 - Third-party providers can throttle requests or change their API at any time.
+
+## Disclaimer
+
+This repository is an independent, unofficial software project. It is not affiliated with, authorized by, endorsed by, or sponsored by X Corp., Twitter, or any third-party service used by the project. All company names, product names, trademarks, and media rights belong to their respective owners.
+
+This API is a technical tool that requests information and media links from third-party services; it does not own, license, or host the underlying posts or media. Content remains the responsibility and property of its original rights holders. Use the software only with publicly accessible content that you own or have permission to access. Do not use it to infringe copyright, privacy, publicity, or other rights, and do not redistribute content unless you have the necessary rights.
+
+You are responsible for ensuring that your use complies with applicable laws, X's terms and policies, and the terms of any third-party provider. Third-party services may change, impose rate limits, or become unavailable. The software is provided “as is,” without warranties of any kind. The maintainers accept no responsibility for misuse, interruptions, data loss, or claims arising from use of the software. This disclaimer is informational and is not legal advice.
 
 ## License
 
